@@ -32,10 +32,21 @@ function kfold(x, y; num_folds = 5, max_p=15)
     m = length(x)
     k = div(m, num_folds)
     I = randperm(m)
-
-    # Seu código aqui
-
+    x, y = x[I], y[I]
+    E_treino = zeros(num_folds,max_p)
+    E_teste = zeros(num_folds,max_p)
+    for fold = 1:num_folds
+        cjto_teste = k*(fold-1)+1:k*fold
+        cjto_treino = setdiff(1:m, cjto_teste)
+        x_tr, y_tr = x[cjto_treino], y[cjto_treino]
+        for p = 1:max_p
+            β = regressao_polinomial(x_tr,y_tr,p)
+            y_pred = β[1] + sum(β[j+1]*x.^j for j=1:p)
+            erro_treino = (1/(2*k))*sum(y[i]-y_pred[i] for i=1:k)^2
+            erro_teste = (1/(2*k))*sum(y[i]-y_pred[i] for i=1:k)^2
+            #preencher as matrizes de erro
+        end
+    end
     png("kfold")
 end
-
 main()
