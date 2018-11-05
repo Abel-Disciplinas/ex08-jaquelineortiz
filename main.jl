@@ -20,8 +20,9 @@ function main()
     plot!(xlin, ylin, c=:red, lw=2)
     png("ajuste")
     
-    for p = 1:max_p
-        y_pred = β[1] + (sum(β[j+1]*x.^j for j=1:max_p))
+    y_pred = β[1]
+    for j = 1:p
+        y_pred .+= β[j+1] * x.^j
     end
     y_med = mean(y)
     R2 = 1 - norm(y_pred - y)^2 / norm(y_med - y)^2  # Calcule a medida R²
@@ -48,9 +49,10 @@ function kfold(x, y; num_folds = 5, max_p=15)
         for p = 1:max_p
             β = regressao_polinomial(x_tr, y_tr, p)
             y_pred = β[1] + sum(β[j+1]*x.^j for j=1:p)
-            erro_treino = (1/(2*k))*sum(y[i]-y_pred[i] for i=1:k)^2
-            erro_teste = (1/(2*k))*sum(y[i]-y_pred[i] for i=1:k)^2
-            #preencher as matrizes de erro
+            erro_treino = (1/(2*lenght(cjto_treino))) * sum(y[i]-y_pred[i] for i=cjto_treino)^2
+            erro_teste = (1/(2*lenght(cjto_teste))) * sum(y[i]-y_pred[i] for i=cjto_teste)^2
+            E_treino[fold,p] = erro_treino
+            E_teste[fold,p] = erro_teste
         end
     end
     png("kfold")
