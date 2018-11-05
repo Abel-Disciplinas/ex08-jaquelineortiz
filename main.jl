@@ -3,7 +3,9 @@ gr(size=(600,400))
 default(fmt = :png)
 
 function main()
-    # Ler dados.csv
+    D = readcsv("dados.csv") # Ler dados.csv
+    x = D[:,1]
+    y = D[:,2]
 
     kfold(x, y)
 
@@ -17,8 +19,12 @@ function main()
     scatter(x, y, ms=3, c=:blue)
     plot!(xlin, ylin, c=:red, lw=2)
     png("ajuste")
-
-    # Calcule a medida R²
+    
+    for p = 1:max_p
+        y_pred = β[1] + (sum(β[j+1]*x.^j for j=1:max_p))
+    end
+    y_med = mean(y)
+    R2 = 1 - norm(y_pred - y)^2 / norm(y_med - y)^2  # Calcule a medida R²
 end
 
 function regressao_polinomial(x, y, p)
@@ -40,7 +46,7 @@ function kfold(x, y; num_folds = 5, max_p=15)
         cjto_treino = setdiff(1:m, cjto_teste)
         x_tr, y_tr = x[cjto_treino], y[cjto_treino]
         for p = 1:max_p
-            β = regressao_polinomial(x_tr,y_tr,p)
+            β = regressao_polinomial(x_tr, y_tr, p)
             y_pred = β[1] + sum(β[j+1]*x.^j for j=1:p)
             erro_treino = (1/(2*k))*sum(y[i]-y_pred[i] for i=1:k)^2
             erro_teste = (1/(2*k))*sum(y[i]-y_pred[i] for i=1:k)^2
@@ -49,4 +55,5 @@ function kfold(x, y; num_folds = 5, max_p=15)
     end
     png("kfold")
 end
+
 main()
