@@ -58,7 +58,7 @@ function kfold(x, y; num_folds = 5, max_p=15)
         #Em_treino = mean(E_treino[fold,:])
         plot!(1:max_p, E_treino[fold,:], c=:blue, ms=1, leg=false)
         plot!(1:max_p, E_teste[fold,:], c=:green, ms=1, leg=false)
-        #plot!(1:max_p, Em_treino[fold,:], c=:blue, ms=3, leg=false)
+        #plot!(1:max_p, Em_treino[fold,:], c=:blue, ms=3, leg=false) #dá erro com o cálculo da média :(
         #plot!(1:max_p, Em_teste[fold,:], c=:green, ms=3, leg=false)
     end
     png("kfold")
